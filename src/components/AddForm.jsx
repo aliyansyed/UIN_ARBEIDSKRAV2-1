@@ -1,4 +1,7 @@
+import { useState } from "react"
+
 export default function AddForm({ setShoppingList }) {
+  const [error, setError] = useState("")
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -8,24 +11,27 @@ export default function AddForm({ setShoppingList }) {
     const amount = Number(form.amount.value)
 
     if (!name && !amount) {
-      alert("Du må fylle ut både vare og antall.")
+      setError("Du må fylle ut både vare og antall.")
       return
     }
 
     if (!name) {
-      alert("Du må skrive inn navn på varen.")
+      setError("Du må skrive inn navn på varen.")
       return
     }
 
     if (!amount) {
-      alert("Du må skrive inn antall.")
+      setError("Du må skrive inn antall.")
       return
     }
 
     if (amount < 1) {
-      alert("Antall må være minst 1.")
+      setError("Antall må være minst 1.")
       return
     }
+
+    // hvis alt er OK
+    setError("")
 
     const newItem = {
       id: crypto.randomUUID(),
@@ -51,6 +57,8 @@ export default function AddForm({ setShoppingList }) {
       </label>
 
       <button>Legg til vare</button>
+
+      {error && <p>{error}</p>}
     </form>
   )
 }
