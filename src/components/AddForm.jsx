@@ -1,64 +1,76 @@
 import { useState } from "react"
 
 export default function AddForm({ setShoppingList }) {
+
+  const [name, setName] = useState("")
+  const [amount, setAmount] = useState("")
   const [error, setError] = useState("")
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const form = e.target
-    const name = form.name.value.trim()
-    const amount = Number(form.amount.value)
+    const trimmedName = name.trim()
+    const numberAmount = Number(amount)
 
-    if (!name && !amount) {
+    if (!trimmedName && !numberAmount) {
       setError("Du må fylle ut både vare og antall.")
       return
     }
 
-    if (!name) {
+    if (!trimmedName) {
       setError("Du må skrive inn navn på varen.")
       return
     }
 
-    if (!amount) {
+    if (!numberAmount) {
       setError("Du må skrive inn antall.")
       return
     }
 
-    if (amount < 1) {
+    if (numberAmount < 1) {
       setError("Antall må være minst 1.")
       return
     }
 
-    // hvis alt er OK
     setError("")
 
     const newItem = {
       id: crypto.randomUUID(),
-      name,
-      amount,
+      name: trimmedName,
+      amount: numberAmount,
       bought: false
     }
 
     setShoppingList(prev => [newItem, ...prev])
-    form.reset()
+
+    setName("")
+    setAmount("")
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <label>
         Vare
-        <input type="text" name="name" />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </label>
 
       <label>
         Antall
-        <input type="number" name="amount" min="1" />
+        <input
+          type="number"
+          min="1"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
       </label>
 
       <button>Legg til vare</button>
 
-      {error && <p>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </form>
   )
 }
